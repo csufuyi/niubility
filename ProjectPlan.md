@@ -1,5 +1,11 @@
 # Niubility 项目计划书
----
+![](http://img5.douban.com/view/photo/photo/public/p2240718208.jpg)
+
+
+## 团队成员
+- [free](https://github.com/csufuyi),[教程](http://csufuyi.gitbooks.io/python-startup/content/)
+- [弓和箭](https://github.com/badboy315),[教程](http://badboy315.gitbooks.io/pythoncamp0/content/)
+- [00](https://github.com/kidult00),[教程](http://kidult00.gitbooks.io/kidult-s-python-book/content/)
 
 ## 起源的故事
 
@@ -7,9 +13,6 @@
 
 互联网世界， 忽然变得鸡汤多， 伪科学更多， 人们也相互传阅， 享受着彼此的「知识」。 虽然有时候， 我们无法成为大师， 可是我们可以选择， 该知道的和不需要知道的。 开智的人们试着用自己一点小行动开始， 让更多的人接触世界知识的顶端知识链， 从站在科技顶端的人开始学习， 为此， 选择从 TED 开始， 作为我们迈向传播科学的一个踏脚石。 
 
-### 为什么会有 **Noteiubility** 
-
-![](http://img5.douban.com/view/photo/photo/public/p2240718208.jpg)
 
 #### 社群的故事
 
@@ -25,40 +28,47 @@
  + 一个喜爱追梦的城市
  + 一个起点：南山科技园
 
-**从第一次线下活动说起** 2015.04.24 中午
+00，弓和箭和free一起开始这个叫Nibility的作品
 
-- 待补
 
-####  Niubility 的设计思路
+##  Niubility 的设计思路
 
-- 思路:尽量利用**已有的资源**. 
+MIT的python编程课导论提到：如今的软件世界，已经不需要从头构建一幅作品，你只需要像一个雕刻家一样，去掉多余的部分。目前互联网上又众多可用的API可以调用，我们的思路是利用已经发明的轮子，构建自己想要的作品。
+
+- 思路:
  + 怎样最快找到各领域的大牛?  一个简单的办法是通过 TED 的 TOP 500 Talks 筛选出大牛. 
  + 怎样按图索骥找到大牛的著作?  通过 豆瓣和 Google Books 查找.
  + 怎样通过大牛了解趋势?  通过提取大牛著作的**标签**,通过时间序列分析.
-- 所以[作品名]可以:找大牛-列著作-看趋势
+- 所以Niubility可以:找大牛-列著作-看趋势
 
 时间源头论， 不是『信息』， 而是『人』。 建立时间源头的优势。 
 
-#### 设计草图
-
-**设计草图 V1.0， 后续修改再通过画出原型图**
-
-![](http://img3.douban.com/view/photo/photo/public/p2240747372.jpg)
-
-## 目标
+##目标
 Feature list:
 
 - Feature 1:找大牛
 	+ 输入:无
-	+ 输出: Ted top 500 talks speaker 列表
-	
+	+ 输出: Ted top 500 talks speaker 列表 (具体数量待定,或者可以选择查看top 100/500/1000)
+	+ 问题1:Ted api 没有提供 talks 的播放量,是否暴力抓取?
+		* 搜索一通后,发现网站已经有排序列表  http://www.ted.com/talks?sort=popular
+	+ 问题2:同一 speaker 的不同 talk 是否需要合并?
+		* 需要去重合并
+
 - Feature 2:列著作
 	+ 输入(或选择):大牛名字
 	+ 输出:
 		- 按时间排列的大牛著作
 		- 每本著作的标签
-		- 每本著作的关注度 (Google books 引用次数? 豆瓣想读/已读数? 再版次数)
+		- 每本著作的关注度 (Google books 引用次数([API](https://developers.google.com/books/))? 豆瓣想读/已读数? 再版次数)
+	+ 问题1:是否完全匹配名字?
+		* 需要精确匹配,是否存在姓和名颠倒情况?是否会省略名字的一部分?
+	+ 问题2:书籍有多个作者,按第一作者匹配,还是只要在作者内就可以
+		* 先按第一作者匹配,看看搜索的结果数量如何
+		
 
+附草图:
+
+![](http://imglf1.ph.126.net/dUBOxmlzq0oxNLpvy1gjOw==/6630619164955302916.jpg)
 
 - Feature 3:看大牛兴趣路径演化
 	+ 输入:大牛名字
@@ -78,10 +88,15 @@ Feature list:
 	+ 其他:标记为想读
 	+ 其他1:调用 Rainvoo 的智能购书订单 ? :P
 
-- Feature 6:用户界面
-   + 输入：大牛名字
-   + 输出：WEB 界面原型 + websit 界面原型 的搜索结果
-     + 大牛的相关检索的信息+图表化
+- Feature 6:微信公众号搜索
+	+ 输入:在公众号内输入大牛名字(是否支持模糊搜索...)
+	+ 输出:大牛的 ted talks 和 豆瓣书籍列表 
+	+ 其他:是否可以实现语音输入名字?(微信语音接口目前仅实现普通话识别)
+
+#### 设计草图初稿
+
+![](http://img3.douban.com/view/photo/photo/public/p2240747372.jpg)
+
 	
 ## 计划
 ~ 5周规划, 通过日报持续增补
@@ -134,7 +149,7 @@ Feature list:
 
 
 ## 资源
-- 日报入口:
+- 日报在wiki上共同起草
 - 仓库入口: [Niubility](https://github.com/csufuyi/niubility)
 - 参考:
     - [SAE 新浪的云计算平台](https://sae.sina.com.cn/)： 免费的，且有python应用环境
