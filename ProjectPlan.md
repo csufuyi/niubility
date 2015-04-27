@@ -43,7 +43,7 @@
 
 **设计草图 V1.0， 后续修改再通过画出原型图**
 
-![](https://github.com/csufuyi/niubility/blob/master/Media/1.jpg)
+![](http://img3.douban.com/view/photo/photo/public/p2240747372.jpg)
 
 ## 目标
 Feature list:
