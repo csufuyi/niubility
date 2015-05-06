@@ -12,6 +12,8 @@ from wechat_sdk.basic import WechatBasic
 from xml import etree
 from xml.etree import ElementTree
 
+from douban import client 
+
 app = Bottle()
 
 @app.get("/")
@@ -64,6 +66,22 @@ def post():
         response = wechat.response_text(u'未知')
     print response
     return response
+
+
+@app.get("/douban")
+def douban_oauth():
+     code = request.GET.get('code', None)
+     global client 
+     client.auth_with_code(code)
+     print client.token_code
+     return "oauth begin"
+
+@app.post('/douban')
+def douban_oauth_sucess():
+    print "after post"
+    global client 
+    print client.token_code
+    
 
 application = sae.create_wsgi_app(app)
 

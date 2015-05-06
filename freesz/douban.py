@@ -14,12 +14,9 @@ SCOPE = 'douban_basic_common,book_basic_r,book_basic_w'
 
 client = DoubanClient(API_KEY, API_SECRET, REDIRECT_URI, SCOPE)
 
-# 以下方式 2 选 1:
 # 1. 引导用户授权
 print 'Go to the following link in your browser:' 
 print client.authorize_url
-code = raw_input('Enter the verification code:')
-client.auth_with_code(code)
 
 
 

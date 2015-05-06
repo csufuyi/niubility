@@ -1,0 +1,18 @@
+Metadata-Version: 1.1
+Name: douban-client
+Version: 0.0.6
+Summary: Python client library for Douban APIs (OAuth 2.0)
+Home-page: http://liluo.github.com/douban-client
+Author: liluo
+Author-email: i@liluo.org
+License: MIT License
+Description: See http://liluo.github.com/douban-client
+Keywords: Douban,OAuth2,Douban API
+Platform: any
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
