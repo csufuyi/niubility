@@ -71,6 +71,7 @@ def post():
 @app.get("/douban")
 def douban_oauth():
      code = request.GET.get('code', None)
+     print code
      global client 
      client.auth_with_code(code)
      print client.token_code

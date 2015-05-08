@@ -11,9 +11,5 @@ REDIRECT_URI = 'http://freesz.sinaapp.com/douban'
 # scope 权限可以在申请应用的 "API 权限" 查看。
 SCOPE = 'douban_basic_common,book_basic_r,book_basic_w'
 client = DoubanClient(API_KEY, API_SECRET, REDIRECT_URI, SCOPE)
-
-# 1. 引导用户授权
 print client.authorize_url
-code = raw_input('Enter the verification code:')
-client.auth_with_code(code)
 
