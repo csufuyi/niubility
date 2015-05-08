@@ -46,24 +46,22 @@ aha, who are you? welcome to wechat id:free_shenzhen
 - 请求：作品名称
 - 回复：作品介绍
 
-【非必须】
-- 请求：想读相关作品
+- 请求：【非必须】想读相关作品  
 - 回复：在豆瓣上标记为想读
 
-【非必须】管理员操作
-- 请求：更新牛人列表
+- 请求：【非必须】管理员更新牛人列表
 - 回复：TED牛人信息更新
 
 
-功能点：
-- 微信公众号基于SAE的后台
-- 豆瓣api的使用（部分需要OAuth2.0认证）
-豆瓣python 封装的api
-https://github.com/douban/douban-client
-- TED API的使用(网页下载后，分析)
-- 微信返回消息的结果组织和展现
+功能点：  
++ 微信公众号基于SAE的后台  
++ 豆瓣api的使用（部分需要OAuth2.0认证）  
++ 豆瓣python 封装的api https://github.com/douban/douban-client
++ TED API的使用(网页下载后，分析)  
++ 微信返回消息的结果组织和展现    
 
 
+## 进度
 已完成：
 微信公众号后台搭建
 豆瓣API的申请和鉴权测试
