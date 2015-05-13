@@ -47,7 +47,7 @@ class SJISProber(MultiByteCharSetProber):
         self._mContextAnalyzer.reset()
 
     def get_charset_name(self):
-        return self._mContextAnalyzer.get_charset_name()
+        return "SHIFT_JIS"
 
     def feed(self, aBuf):
         aLen = len(aBuf)

@@ -1,10 +1,16 @@
+# urllib3/__init__.py
+# Copyright 2008-2013 Andrey Petrov and contributors (see CONTRIBUTORS.txt)
+#
+# This module is part of urllib3 and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 """
 urllib3 - Thread-safe connection pooling and re-using.
 """
 
 __author__ = 'Andrey Petrov (andrey.petrov@shazow.net)'
 __license__ = 'MIT'
-__version__ = '1.10.3'
+__version__ = 'dev'
 
 
 from .connectionpool import (
@@ -17,10 +23,7 @@ from . import exceptions
 from .filepost import encode_multipart_formdata
 from .poolmanager import PoolManager, ProxyManager, proxy_from_url
 from .response import HTTPResponse
-from .util.request import make_headers
-from .util.url import get_host
-from .util.timeout import Timeout
-from .util.retry import Retry
+from .util import make_headers, get_host, Timeout
 
 
 # Set default logging handler to avoid "No handler found" warnings.
@@ -48,21 +51,8 @@ def add_stderr_logger(level=logging.DEBUG):
     handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
     logger.addHandler(handler)
     logger.setLevel(level)
-    logger.debug('Added a stderr logging handler to logger: %s' % __name__)
+    logger.debug('Added an stderr logging handler to logger: %s' % __name__)
     return handler
 
 # ... Clean up.
 del NullHandler
-
-
-import warnings
-# SecurityWarning's always go off by default.
-warnings.simplefilter('always', exceptions.SecurityWarning)
-# InsecurePlatformWarning's don't vary between requests, so we keep it default.
-warnings.simplefilter('default', exceptions.InsecurePlatformWarning)
-
-def disable_warnings(category=exceptions.HTTPWarning):
-    """
-    Helper for quickly disabling all urllib3 warnings.
-    """
-    warnings.simplefilter('ignore', category)
