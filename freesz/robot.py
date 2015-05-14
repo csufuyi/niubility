@@ -13,16 +13,22 @@ session_storage = SaeKVDBStorage()
 robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
 
-@robot.filter("正文")
+@robot.filter("TED")
 def process():
-    return "正文为 a "
+    return "大牛列表："
+
+@robot.text
+def hello(message, session):
+    count = session.get("count", 0) + 1
+    session["count"] = count
+    return "Hello! You have sent %s messages to me" % count
 
 @robot.subscribe
 def subscribe(message):
-        return 'Weclome to niubility!'
+        return "Weclome to niubility! 输入'大牛'"
 
 @robot.handler
 def echo(message):
-    return  "该怎么回答你呢，还是重新输入吧"
+    return  "该怎么回答你呢，还是重新输入'大牛'吧"
 
 
