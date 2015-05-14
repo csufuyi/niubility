@@ -14,21 +14,30 @@ robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
 
 @robot.filter("大牛")
-def process():
-    return "大牛列表："
+def person(message, session):
+    session['last'] = message.content
+    return "大牛列表,请输入TED牛人序号"
+
+@robot.filter("书名")
+def bookname(message, session):
+    session['last'] = message.content
+    return "请输入书名"
+
+@robot.text
+def douban(message, session):
+    last  = session.get('last', 0)
+    print last
+    if last == u"书名":
+        return message.content
 
 @robot.text
 def hello(message, session):
     count = session.get("count", 0) + 1
     session["count"] = count
-    return "Hello! You have sent %s messages to me" % count
+    return "请输入'大牛', 你累计发了 %s 条消息" % count
 
 @robot.subscribe
 def subscribe(message):
-        return "Weclome to niubility! 输入'大牛'"
-
-@robot.handler
-def echo(message):
-    return  "该怎么回答你呢，还是重新输入'大牛'吧"
+        return "Weclome to niubility! 输入'大牛','书名',有惊喜哦！"
 
 
