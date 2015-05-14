@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os 
 import sys
 
@@ -12,9 +13,16 @@ session_storage = SaeKVDBStorage()
 robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
 
+@robot.filter("正文")
+def process():
+    return "正文为 a "
+
+@robot.subscribe
+def subscribe(message):
+        return 'Weclome to niubility!'
 
 @robot.handler
 def echo(message):
-    return 'Hello World!'
+    return  "该怎么回答你呢，还是重新输入吧"
 
 
