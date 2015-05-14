@@ -13,7 +13,7 @@ session_storage = SaeKVDBStorage()
 robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
 
-@robot.filter("TED")
+@robot.filter("大牛")
 def process():
     return "大牛列表："
 
