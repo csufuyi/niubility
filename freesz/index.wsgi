@@ -1,18 +1,13 @@
-import sae
-
 from robot  import robot
 from douban import client
 from bottle import Bottle, request, run
 
-application = sae.create_wsgi_app(robot.wsgi)
+import sae
 
-'''
-import sys
-print sys.path
+app = Bottle()
+app.mount('/api', robot.wsgi)
 
-application.mount('/api', wxrobot.wsgi)
-
-@application.get('/douban')
+@app.get('/douban')
 def douban():
     code = request.GET.get('code', None)
     print code
@@ -21,4 +16,7 @@ def douban():
     print 'from douban'
     return "oauth begin"
 
-'''
+application = sae.create_wsgi_app(app)
+
+
+
