@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.join(root, 'site-packages'))
 
 from werobot.robot import werobot
 from werobot.session.saekvstorage import SaeKVDBStorage
+from douban import client
 
 session_storage = SaeKVDBStorage()
 
@@ -26,8 +27,11 @@ def bookname(message, session):
 @robot.text
 def douban(message, session):
     last  = session.get('last', 0)
-    print last
+    print message.content
     if last == u"书名":
+        # client.book.search(q, tag, start, count)  
+        # ret = client.book.search(message.content, 0, 0, 3)
+        #print ret
         return message.content
 
 @robot.text
