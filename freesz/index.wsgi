@@ -10,9 +10,7 @@ app.mount('/api', robot.wsgi)
 @app.get('/douban')
 def douban():
     code = request.GET.get('code', None)
-    client.auth_with_code(code)
-    print client.token_code
-    return "douban auth sucess, please backto wechat"
+    return "paste the code to wechat:" + code
 
 application = sae.create_wsgi_app(app)
 
