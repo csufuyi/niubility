@@ -11,6 +11,10 @@ app.mount('/api', robot.wsgi)
 def welcome():
 	return "2015年05月"
 
+@app.get('/ted')
+def tedlist():
+	return "andy"
+
 @app.get('/douban')
 def douban():
     code = request.GET.get('code', None)
