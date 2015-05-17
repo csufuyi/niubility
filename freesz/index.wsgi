@@ -15,10 +15,10 @@ def tedlist():
     return "andy"
 
 @app.get('/admin')
-def tedlist():
+def login():
     return "admin"
 
-
+# douban api callback
 @app.get('/douban')
 def douban():
     code = request.GET.get('code', None)
