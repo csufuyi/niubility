@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from robot  import robot
 from bottle import Bottle, request, run, template
-
+from bottle import jinja2_view as view
 from douban_client import DoubanClient
 from douban import *
 
@@ -12,8 +12,10 @@ import sae
 app = Bottle()
 
 @app.get('/')
+@view('templates/index.html')
 def welcome():
-    return "Welcome to Niubility!"
+    number = 10
+    return {'hello_world_str':'Hello world! Number:%s ' % str(number)}
 
 @app.get('/ted')
 def tedlist():
