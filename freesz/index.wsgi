@@ -15,6 +15,11 @@ def welcome():
 def tedlist():
 	return "andy"
 
+@app.get('/admin')
+def tedlist():
+	return "admin"
+
+
 @app.get('/douban')
 def douban():
     code = request.GET.get('code', None)
