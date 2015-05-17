@@ -23,7 +23,6 @@ def tedlist():
 def login():
     return  client_login.authorize_url
  
-    #return template('Hello {{name}}, how are you?', name=name)
 @app.get('/login')
 def greet():
     code = request.GET.get('code', 0)
