@@ -52,8 +52,8 @@ def auth(message, session):
         client.auth_with_code(message.content)
         print client.token_code
         if '' != client.token_code:
-            session['code'] = message.content
-            return "auth ok  " + message.content
+            session['code'] = client.token_code
+            return "auth ok  " + client.token_code
         else:
             return "auth failed, please check the code"
 
@@ -66,10 +66,9 @@ def book(message, session):
         if (0 == code):
             return "请输入'豆瓣'完成授权"
         else:
-     
-        # client.book.search(q, tag, start, count)  
-        # ret = client.book.search(message.content, 0, 0, 3)
-        #print ret
+            client.auth_with_token(code)
+            ret = client.book.search(message.content, 0, 0, 3)
+            print ret
             return "开始豆瓣查询,待完成"
 
 @robot.text
