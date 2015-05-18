@@ -23,11 +23,13 @@ def welcome():
 @app.get('/ted')
 def tedlist():
     return "andy"
- 
+
+# auth douban test ok
 @app.get('/auth')
+@view('templates/login.html')
 def login():
-    return client_login.authorize_url
-#    return urllib2.urlopen(client_login.authorize_url)
+    print client_login.authorize_url
+    return {'auth_str':'"'+client_login.authorize_url+'"'}
  
 @app.get('/login')
 def greet():

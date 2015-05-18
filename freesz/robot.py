@@ -37,8 +37,8 @@ def douban(message, session):
     code  = session.get('code', 0)
     # todo finish check time
     if (0 == code):
-        print client.authorize_url
-        return client.authorize_url
+        print client.authorize_url + '&state=test'
+        return client.authorize_url + '&state=test'
     else:
         return "auth ok " + code
 
