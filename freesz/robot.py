@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
 import os 
 import sys
+import sae
+import json
+
 
 root = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(root, 'site-packages'))
 
 from werobot.robot import werobot
 from werobot.session.saekvstorage import SaeKVDBStorage
+from werobot.utils  import * 
 from douban_client import DoubanClient
 from douban import *
 
 session_storage = SaeKVDBStorage()
+
+# user info key uid
+wechat_kv = sae.kvdb.Client()
 
 robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
@@ -33,14 +40,19 @@ def bookname(message, session):
 # 豆瓣oauth2鉴权   
 @robot.filter("豆瓣")
 def douban(message, session):
-    session['code'] = 0
-    code  = session.get('code', 0)
-    # todo finish check time
-    if (0 == code):
-        print client.authorize_url + '&state=test'
-        return client.authorize_url + '&state=test'
+    guid = message.source
+    userstr = wechat_kv.get(to_binary(guid))
+    if None != userstr:
+       user = json.loads(userstr)
+       uid = user['uid']
+       token = user['token']
+       print user
+       client.auth_with_token(token)
+       return "auth ok " + token
     else:
-        return "auth ok " + code
+       pass
+    print client.authorize_url + '&guid='+ '123'
+    return client.authorize_url + '&guid='+ '123'
 
 @robot.text
 def auth(message, session):
