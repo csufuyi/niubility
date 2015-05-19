@@ -51,8 +51,8 @@ def douban(message, session):
        return "auth ok " + token
     else:
        pass
-    print client.authorize_url + '&guid='+ '123'
-    return client.authorize_url + '&guid='+ '123'
+    print client.authorize_url + '&state='+ guid
+    return client.authorize_url + '&state='+ guid
 
 @robot.text
 def auth(message, session):

@@ -33,26 +33,24 @@ def tedlist():
 @view('templates/login.html')
 def login():
     print client_login.authorize_url
-    return {'auth_str':'"'+client_login.authorize_url+ '&guid=123'+'"'}
+    return {'auth_str':'"'+client_login.authorize_url+ '&state=testcontext'+'"'}
 
 # login douban callback
 @app.get('/login')
 def greet():
     code = request.GET.get('code', 0)
-    guid = request.GET.get('guid', None)
+    guid = request.GET.get('state', None)
     print guid
     client_login.auth_with_code(code)
     uid =  client_login.user.me.get('uid', 0)
-    kv.set(to_binary(uid), client_login.token_code)
+    kv.set(to_binary(guid), client_login.token_code)
     return template('Hello {{name}}, how are you?', name=uid)
    
 # wechat douban api callback
 @app.get('/douban')
 def douban():
     code = request.GET.get('code', None)
-    guid = request.GET.get('guid', None)
-    print code
-    print guid
+    guid = request.GET.get('state', None)
     client.auth_with_code(code)
     uid =  client.user.me.get('uid', 0)
     user = {}
