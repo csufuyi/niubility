@@ -43,7 +43,7 @@ def douban(message, session):
         auth_html = '<a href="%s">%s</a>' % (auth_url,auth_des)
         return auth_html
     else:
-        return "auth ok! " + guid + ':'+token
+        return u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
 
 # 根据关键字查书
 @robot.text
