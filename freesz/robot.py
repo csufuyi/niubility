@@ -62,8 +62,8 @@ def book(message, session):
         else:
             ret_str = u'作品列表:\n'
             for i in range(count):
-                ret_str +=  res['books'][0]['title'] +'bookid '+ res['books'][i]['id']  \
-                + res['books'][i]['author'][0] + '\n'
+                ret_str +=  'bookid: '+ res['books'][i]['id'] + res['books'][i]['title'] \
+                            + res['books'][i]['url'] + res['books'][i]['author'][0] + '\n'
             print ret_str
             return ret_str
 
