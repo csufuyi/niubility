@@ -3,6 +3,7 @@ import os
 import sys
 import sae
 import json
+import re
 
 root = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(root, 'site-packages'))
@@ -47,11 +48,8 @@ def wish_read(message, session):
     if (None == token):
         return "输入'豆瓣'完成授权后回到微信"
     else:
-        return re.findall(r'[\d\.]+', message.content)
         client.auth_with_token(token)
-        res = client.book.search(message.content, '', 0, 3)
-        res_str = json.dumps(res)
-        print res_str
+        client.book.collection(1220562)
         return "设置想读成功"
  
 # 根据关键字查书
