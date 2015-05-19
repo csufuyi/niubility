@@ -56,10 +56,26 @@ def book(message, session):
             return "输入'豆瓣'完成授权后回到微信"
         else:
             client.auth_with_token(token)
-            ret = client.book.search(message.content, 0, 0, 3)
-            print ret
-            return "开始豆瓣查询,待完成"
+            res = client.book.search(message.content, '', 0, 1)
+            res_str = json.dumps(res)
+            print res_str
+            count = res['count']
+            if count == 0:
+                return "not found"
+            else:
+                return res['books'][0]['title'] + res['books'][0]['id']
 
+'''
+    def test_search_book(self):
+                ret = self.client.book.search('坦白')
+                        self.assertTrue(isinstance(ret, dict))
+                                self.assertTrue(isinstance(ret['books'], list))
+                                        self.assertTrue('start' in ret)
+                                                self.assertTrue('count' in ret)
+                                                        self.assertTrue('total' in ret)
+
+                                                        '''
+        
 @robot.text
 def session_times(message, session):
     count = session.get("count", 0) + 1
