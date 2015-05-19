@@ -41,8 +41,6 @@ def bookname(message, session):
 def douban(message, session):
     guid = message.source
     token = get_token(message, session)
-    # test
-    token = None
     if None == token:
         auth_des = u'请点我完成豆瓣授权'
         auth_url =  client.authorize_url + '&state='+ guid
