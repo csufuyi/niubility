@@ -22,12 +22,7 @@ robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
 
 client = DoubanClient(API_KEY, API_SECRET, REDIRECT_URI, SCOPE)
-
-@robot.text
-def last(message, session):
-    if message.content == u'大牛' or message.content == u'书名': 
-        session['last'] = message.content
-        
+       
 @robot.filter("大牛")
 def person(message, session):
     return "大牛列表,请输入TED牛人序号, 待完成"
@@ -45,6 +40,20 @@ def douban(message, session):
     else:
         return u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
 
+# 标记想读 中文正则匹配有问题
+@robot.filter(re.compile(".*?xd.*?"))
+def wish_read(message, session):
+    token = get_token(message, session)
+    if (None == token):
+        return "输入'豆瓣'完成授权后回到微信"
+    else:
+        return re.findall(r'[\d\.]+', message.content)
+        client.auth_with_token(token)
+        res = client.book.search(message.content, '', 0, 3)
+        res_str = json.dumps(res)
+        print res_str
+        return "设置想读成功"
+ 
 # 根据关键字查书
 @robot.text
 def book(message, session):
@@ -66,17 +75,18 @@ def book(message, session):
                             + res['books'][i]['url'] + res['books'][i]['author'][0] + '\n'
             print ret_str
             return ret_str
-
-robot.text
+      
+@robot.text
 def session_times(message, session):
     count = session.get("count", 0) + 1
     session["count"] = count
-    return "请输入'大牛','书名', 你累计发了 %s 条消息" % count
+    return "你累计发了 %s 条消息" % count
 
 @robot.subscribe
 def subscribe(message):
-        return "Weclome to niubility! 输入'大牛','书名',有惊喜哦！"
+    return "Weclome! 输入关键字（书名或作者）可查书，输入'大牛'有惊喜哦！"
 
+# get token saved in wechat_kv
 def get_token(message, session):
     guid = message.source
     userstr = wechat_kv.get(to_binary(guid))
