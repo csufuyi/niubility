@@ -31,10 +31,6 @@ def last(message, session):
 @robot.filter("大牛")
 def person(message, session):
     return "大牛列表,请输入TED牛人序号, 待完成"
-  
-@robot.filter("书名")
-def bookname(message, session):
-    return "请输入书名"
 
 # 豆瓣oauth2鉴权   
 @robot.filter("豆瓣")
@@ -49,37 +45,29 @@ def douban(message, session):
     else:
         return "auth ok! " + guid + ':'+token
 
+# 根据关键字查书
 @robot.text
 def book(message, session):
-    last  = session.get('last', 0)
-    print message.content
-    if last == u"书名":
-        token = get_token(message, session)
-        if (None == token):
-            return "输入'豆瓣'完成授权后回到微信"
+    token = get_token(message, session)
+    if (None == token):
+        return "输入'豆瓣'完成授权后回到微信"
+    else:
+        client.auth_with_token(token)
+        res = client.book.search(message.content, '', 0, 3)
+        res_str = json.dumps(res)
+        print res_str
+        count = res['count']
+        if count == 0:
+            return "not found"
         else:
-            client.auth_with_token(token)
-            res = client.book.search(message.content, '', 0, 1)
-            res_str = json.dumps(res)
-            print res_str
-            count = res['count']
-            if count == 0:
-                return "not found"
-            else:
-                return res['books'][0]['title'] + res['books'][0]['id']
+            ret_str = u'作品列表:\n'
+            for i in range(count):
+                ret_str +=  res['books'][0]['title'] +'bookid '+ res['books'][i]['id']  \
+                + res['books'][i]['author'][0] + '\n'
+            print ret_str
+            return ret_str
 
-'''
-    def test_search_book(self):
-                ret = self.client.book.search('坦白')
-                        self.assertTrue(isinstance(ret, dict))
-                                self.assertTrue(isinstance(ret['books'], list))
-                                        self.assertTrue('start' in ret)
-                                                self.assertTrue('count' in ret)
-                                                        self.assertTrue('total' in ret)
-
-                                                        '''
-        
-@robot.text
+robot.text
 def session_times(message, session):
     count = session.get("count", 0) + 1
     session["count"] = count
