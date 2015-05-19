@@ -4,7 +4,6 @@ import sys
 import sae
 import json
 
-
 root = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(root, 'site-packages'))
 
@@ -16,7 +15,7 @@ from douban import *
 
 session_storage = SaeKVDBStorage()
 
-# user info key uid
+# user info [guid], uid, access token
 wechat_kv = sae.kvdb.Client()
 
 robot = werobot.WeRoBot(token="freesz", enable_session=True,
@@ -26,7 +25,7 @@ client = DoubanClient(API_KEY, API_SECRET, REDIRECT_URI, SCOPE)
 
 @robot.text
 def last(message, session):
-    if message.content == u'大牛' or message.content == u'书名' or message.content == u'豆瓣':
+    if message.content == u'大牛' or message.content == u'书名': 
         session['last'] = message.content
         
 @robot.filter("大牛")
@@ -41,44 +40,22 @@ def bookname(message, session):
 @robot.filter("豆瓣")
 def douban(message, session):
     guid = message.source
-    userstr = wechat_kv.get(to_binary(guid))
-    if None != userstr:
-       user = json.loads(userstr)
-       uid = user['uid']
-       token = user['token']
-       print user
-       client.auth_with_token(token)
-       return "auth ok " + token
+    token = get_token(message, session)
+    if None == token:
+        return client.authorize_url + '&state='+ guid
     else:
-       pass
-    print client.authorize_url + '&state='+ guid
-    return client.authorize_url + '&state='+ guid
-
-@robot.text
-def auth(message, session):
-    last  = session.get('last', 0)
-    print message.content
-    if last == u"豆瓣":
-        print message.content
-        session['code'] = 0
-        client.auth_with_code(message.content)
-        print client.token_code
-        if '' != client.token_code:
-            session['code'] = client.token_code
-            return "auth ok  " + client.token_code
-        else:
-            return "auth failed, please check the code"
+        return "auth ok! " + guid + ':'+token
 
 @robot.text
 def book(message, session):
     last  = session.get('last', 0)
     print message.content
     if last == u"书名":
-        code  = session.get('code', 0)
-        if (0 == code):
-            return "请输入'豆瓣'完成授权"
+        token = get_token(message, session)
+        if (None == token):
+            return "输入'豆瓣'完成授权后回到微信"
         else:
-            client.auth_with_token(code)
+            client.auth_with_token(token)
             ret = client.book.search(message.content, 0, 0, 3)
             print ret
             return "开始豆瓣查询,待完成"
@@ -93,4 +70,12 @@ def session_times(message, session):
 def subscribe(message):
         return "Weclome to niubility! 输入'大牛','书名',有惊喜哦！"
 
-
+def get_token(message, session):
+    guid = message.source
+    userstr = wechat_kv.get(to_binary(guid))
+    if None != userstr:
+       user = json.loads(userstr)
+       uid = user['uid']
+       token = user['token']
+       return token
+    return None
