@@ -33,7 +33,6 @@ def person(message, session):
 def douban(message, session):
     guid = message.source
     token = get_token(message, session)
-    token = None
     if None == token:
         auth_des = u'请点我完成豆瓣授权'
         auth_url =  client.authorize_url + '&state='+ guid
@@ -101,7 +100,7 @@ def session_times(message, session):
 
 @robot.subscribe
 def subscribe(message):
-    return "Weclome! 输入关键字（书名或作者）可查书，输入'大牛'有惊喜哦！"
+    return "欢迎来到Niubility! 输入任意关键字(书名或作者）查书，输入'大牛'有惊喜哦！"
 
 # get token saved in wechat_kv
 def get_token(message, session):
