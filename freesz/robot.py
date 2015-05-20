@@ -79,16 +79,22 @@ def book(message, session):
         else:
             ret_str = u'作品列表:\n'
             for i in range(count):
-                session[str(i)] = res['books'][i]['id']
-                print session.get(str(i), 0)
-                ret_str +=  str(i) + ' '   \
-                            + res['books'][i]['title'] + ' ' \
-                            + res['books'][i]['publisher'] + ' ' \
-                            + res['books'][i]['pubdate'] + ' ' \
-                            + res['books'][i]['pages'] + '\n ' 
-                       #     + res['books'][i]['ebook_url'] + '\n'
-                  #          + res['books'][i]['author'][0] + '\n'
-            ret_str +=  u'输入书序号0,1,2等可标记为想读\n'
+                bookid = res['books'][i]['id']
+                #save bookid
+                session[str(i)] = bookid
+                bookurl = "http://book.douban.com/subject/"+ bookid
+                bookauthor = ''
+                for index in range(len(res['books'][i]['author'])):
+                    bookauthor += res['books'][i]['author'][index] + ' '
+                    
+                ret_str +=  str(i) + '\n' \
+                            + res['books'][i]['title'] + ',' \
+                            + bookauthor +  ','   \
+                            + res['books'][i]['publisher'] + ',' \
+                            + res['books'][i]['pubdate'] + ',' \
+                            + 'pages:' + res['books'][i]['pages'] + ','\
+                            + bookurl + '\n ' 
+            ret_str +=  u'\n输入书序号0,1,2等可标记为想读\n'
             print ret_str
             return ret_str
             
