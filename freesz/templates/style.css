@@ -1,0 +1,52 @@
+body{
+	margin: 0px;
+	font-size: 16px;
+}
+
+div.topRed{
+	height: 4px;
+	width: 100%;
+	background: #D32A25;
+}
+
+div.homeNav{
+	position: relative;
+	background: #FFFFFF;
+	height: 60px;
+	box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.20);
+}
+
+h1.homeTitle{
+	/* Ted 最受欢迎演讲者著作展示: */
+	font-family: STHeitiSC-Light;
+	font-size: 30px;
+	color: #D32A25;
+	line-height: 30px;
+	padding: 10px;
+}
+
+ul{
+	display: block;
+}
+
+li{
+
+}
+
+div.authorInfo{
+
+}
+
+span.authorName{
+	display: block;
+}
+
+span.authorTitle{
+	display: block;
+}
+
+img.authorImg{
+	/*float: left;*/
+	/*display: block;*/
+	width: 100px;
+}
