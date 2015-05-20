@@ -11,9 +11,10 @@ import urllib2
 import sae
 import sae.kvdb
 import json
+import requests
 
 client_login = DoubanClient(LOGIN_API_KEY, LOGIN_API_SECRET, LOGIN_REDIRECT_URI, LOGIN_SCOPE)
-
+ted_url = 'http://www.ted.com/talks?sort=popular'
 kv = sae.kvdb.Client()
 
 app = Bottle()
@@ -24,9 +25,16 @@ def welcome():
     number = 10
     return {'hello_world_str':'Hello world! Number:%s ' % str(number)}
 
+
+def get_video_page_urls():
+        response = requests.get(ted_url)
+        print response
+        return response
+
 @app.get('/ted')
 def tedlist():
-    return "andy"
+    res = get_video_page_urls()
+    return res
 
 # web login auth douban
 @app.get('/auth')
