@@ -12,6 +12,7 @@ import sae
 import sae.kvdb
 import json
 import requests
+import bs4
 
 client_login = DoubanClient(LOGIN_API_KEY, LOGIN_API_SECRET, LOGIN_REDIRECT_URI, LOGIN_SCOPE)
 ted_url = 'http://www.ted.com/talks?sort=popular'
@@ -25,11 +26,22 @@ def welcome():
     number = 10
     return {'hello_world_str':'Hello world! Number:%s ' % str(number)}
 
+'''
+  <div class="media__message">
+             <h4 class="h12 talk-link__speaker">Ken Robinson</h4>
+             <h4 class="h9 m5"> <a href="/talks/ken_robinson_says_schools_kill_creativity"> How schools kill creativity </a> </h4>
+             <div class="meta">
+              <span class="meta__item"> <span class="meta__val"> 33M views </span> </span>
+              <span class="meta__item"> <span class="meta__val"> Jun 2006 </span> </span>
+             </div>
+            </div>
 
+'''
 def get_video_page_urls():
         response = requests.get(ted_url)
-        print response
-        return response
+        soup = bs4.BeautifulSoup(response.text)
+        return "testcontext"
+        return [a.attrs.get('href') for a in soup.select('div.video-summary-data a[href^=/video]')]
 
 @app.get('/ted')
 def tedlist():
