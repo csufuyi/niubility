@@ -48,7 +48,10 @@ def wish_read(message, session):
     if (None == token):
         return "输入'豆瓣'完成授权后回到微信"
     else:
+        print message.content
         client.auth_with_token(token)
+        uid =  client.user.me.get('uid', 0)
+        print uid
         client.book.collection(1220562)
         return "设置想读成功"
  
