@@ -68,15 +68,20 @@ def book(message, session):
         print res_str
         count = res['count']
         if count == 0:
-            return "not found"
+            return u"没找到啊，修改下关键字试试~"
         else:
             ret_str = u'作品列表:\n'
             for i in range(count):
-                ret_str +=  'bookid: '+ res['books'][i]['id'] + res['books'][i]['title'] \
-                            + res['books'][i]['url'] + res['books'][i]['author'][0] + '\n'
+                session[str(i)] = res['books'][i]['id']
+                print session.get(str(i), 0)
+                ret_str +=  str(i) + ' ' \
+                            + res['books'][i]['title'] + ' ' \
+                            + res['books'][i]['author'][0] \
+                            + '\n'
+            ret_str +=  u'输入书序号0,1,2等可标记为想读\n'
             print ret_str
             return ret_str
-      
+            
 @robot.text
 def session_times(message, session):
     count = session.get("count", 0) + 1
