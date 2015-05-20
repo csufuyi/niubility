@@ -33,16 +33,14 @@ def person(message, session):
 def douban(message, session):
     guid = message.source
     token = get_token(message, session)
+    token = None
     if None == token:
         auth_des = u'请点我完成豆瓣授权'
         auth_url =  client.authorize_url + '&state='+ guid
         auth_html = '<a href="%s">%s</a>' % (auth_url,auth_des)
         return auth_html
     else:
-        auth_pre_des = '<p> <font size="2" face="Verdana">'
-        auth_post_des ='</font></p>'
-        auth_ok_des = u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
-        return auth_pre_des + auth_ok_des + auth_post_des
+        return u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
 
 # 标记想读 中文正则匹配有问题
 @robot.filter(re.compile("\d"))

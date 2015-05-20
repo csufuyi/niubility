@@ -48,6 +48,7 @@ def greet():
    
 # wechat douban api callback
 @app.get('/douban')
+@view('templates/douban.html')
 def douban():
     code = request.GET.get('code', None)
     guid = request.GET.get('state', None)
@@ -58,7 +59,7 @@ def douban():
     user['token'] = client.token_code
     user_str = json.dumps(user)
     wechat_kv.set(to_binary(guid), user_str)
-    return "Auth sucessed, back to wechat:  " + uid
+    return {'auth_str':uid}
 
 # wechat request
 app.mount('/api', robot.wsgi)
