@@ -39,10 +39,13 @@ def douban(message, session):
         auth_html = '<a href="%s">%s</a>' % (auth_url,auth_des)
         return auth_html
     else:
-        return u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
+        auth_pre_des = '<p> <font size="2" face="Verdana">'
+        auth_post_des ='</font></p>'
+        auth_ok_des = u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
+        return auth_pre_des + auth_ok_des + auth_post_des
 
 # 标记想读 中文正则匹配有问题
-@robot.filter(re.compile(".*?xd.*?"))
+@robot.filter(re.compile("\d"))
 def wish_read(message, session):
     token = get_token(message, session)
     if (None == token):
@@ -50,10 +53,17 @@ def wish_read(message, session):
     else:
         print message.content
         client.auth_with_token(token)
-        uid =  client.user.me.get('uid', 0)
-        print uid
-        client.book.collection(1220562)
-        return "设置想读成功"
+        bookid =  session.get(message.content, 0)
+        print bookid
+        if 0 == bookid:
+            return "输入有误,请重新输入"
+        else:
+            try:
+                client.book.collection(bookid)
+            except:
+                return "你收藏过这本书啦!"
+            else:
+                return "设置想读成功!"
  
 # 根据关键字查书
 @robot.text
@@ -74,10 +84,13 @@ def book(message, session):
             for i in range(count):
                 session[str(i)] = res['books'][i]['id']
                 print session.get(str(i), 0)
-                ret_str +=  str(i) + ' ' \
+                ret_str +=  str(i) + ' '   \
                             + res['books'][i]['title'] + ' ' \
-                            + res['books'][i]['author'][0] \
-                            + '\n'
+                            + res['books'][i]['publisher'] + ' ' \
+                            + res['books'][i]['pubdate'] + ' ' \
+                            + res['books'][i]['pages'] + '\n ' 
+                       #     + res['books'][i]['ebook_url'] + '\n'
+                  #          + res['books'][i]['author'][0] + '\n'
             ret_str +=  u'输入书序号0,1,2等可标记为想读\n'
             print ret_str
             return ret_str
