@@ -40,8 +40,11 @@ def welcome():
 def get_video_page_urls():
         response = requests.get(ted_url)
         soup = bs4.BeautifulSoup(response.text)
-        return "testcontext"
-        return [a.attrs.get('href') for a in soup.select('div.video-summary-data a[href^=/video]')]
+        ret_str = ''
+        for tag in soup.find_all("h4"):
+            if None != tag.string:
+                ret_str += tag.string + '\n'
+        return ret_str
 
 @app.get('/ted')
 def tedlist():
