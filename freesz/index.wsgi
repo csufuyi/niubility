@@ -15,7 +15,10 @@ import requests
 import bs4
 
 client_login = DoubanClient(LOGIN_API_KEY, LOGIN_API_SECRET, LOGIN_REDIRECT_URI, LOGIN_SCOPE)
-ted_url = 'http://www.ted.com/talks?sort=popular'
+
+ted_popular_url = 'http://www.ted.com/talks?page=1&sort=popular'
+ted_newest_url = 'http://www.ted.com/talks?page=1'
+
 kv = sae.kvdb.Client()
 
 app = Bottle()
@@ -27,18 +30,11 @@ def welcome():
     return {'hello_world_str':'Hello world! Number:%s ' % str(number)}
 
 '''
-  <div class="media__message">
-             <h4 class="h12 talk-link__speaker">Ken Robinson</h4>
-             <h4 class="h9 m5"> <a href="/talks/ken_robinson_says_schools_kill_creativity"> How schools kill creativity </a> </h4>
-             <div class="meta">
-              <span class="meta__item"> <span class="meta__val"> 33M views </span> </span>
-              <span class="meta__item"> <span class="meta__val"> Jun 2006 </span> </span>
-             </div>
-            </div>
-
+TED web html
+<h4 class="h12 talk-link__speaker">Ken Robinson</h4>
 '''
-def get_video_page_urls():
-        response = requests.get(ted_url)
+def get_ted_page_name():
+        response = requests.get(ted_popular_url)
         soup = bs4.BeautifulSoup(response.text)
         ret_str = ''
         for tag in soup.find_all("h4"):
@@ -48,7 +44,7 @@ def get_video_page_urls():
 
 @app.get('/ted')
 def tedlist():
-    res = get_video_page_urls()
+    res = get_ted_page_name()
     return res
 
 # web login auth douban
