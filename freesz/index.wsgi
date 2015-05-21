@@ -16,10 +16,13 @@ import bs4
 
 client_login = DoubanClient(LOGIN_API_KEY, LOGIN_API_SECRET, LOGIN_REDIRECT_URI, LOGIN_SCOPE)
 
+login_kv = sae.kvdb.Client()
+ted_kv = sae.kvdb.Client()
+
 ted_popular_url = 'http://www.ted.com/talks?page=1&sort=popular'
 ted_newest_url = 'http://www.ted.com/talks?page=1'
-
-kv = sae.kvdb.Client()
+TED_POPULAR = 'ted_popular'
+TED_NEWEST = 'ted_newest'
 
 app = Bottle()
 
@@ -36,16 +39,20 @@ TED web html
 def get_ted_page_name():
         response = requests.get(ted_popular_url)
         soup = bs4.BeautifulSoup(response.text)
-        ret_str = ''
+        ted_name_list = []
         for tag in soup.find_all("h4"):
             if None != tag.string:
-                ret_str += tag.string + '\n'
-        return ret_str
+                ted_name_list.append(tag.string) 
+        ted_name_str = json.dumps(ted_name_list)
+        ted_kv.set(to_binary(TED_POPULAR), ted_name_str) 
+        return ted_name_str
 
 @app.get('/ted')
+@view('templates/ted.html')
 def tedlist():
     res = get_ted_page_name()
-    return res
+    print res
+    return {'ted_str':res}
 
 # web login auth douban
 @app.get('/auth')
@@ -54,7 +61,7 @@ def login():
     print client_login.authorize_url
     return {'auth_str':'"'+client_login.authorize_url+ '&state=testcontext'+'"'}
 
-# login douban callback
+# web login douban callback
 @app.get('/login')
 def greet():
     code = request.GET.get('code', 0)
@@ -62,7 +69,7 @@ def greet():
     print guid
     client_login.auth_with_code(code)
     uid =  client_login.user.me.get('uid', 0)
-    kv.set(to_binary(guid), client_login.token_code)
+    login_kv.set(to_binary(guid), client_login.token_code)
     return template('Hello {{name}}, how are you?', name=uid)
    
 # wechat douban api callback
