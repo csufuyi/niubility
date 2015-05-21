@@ -19,14 +19,27 @@ session_storage = SaeKVDBStorage()
 # user info [guid], uid, access token
 wechat_kv = sae.kvdb.Client()
 
+ted_kv = sae.kvdb.Client()
+TED_POPULAR = 'ted_popular'
+TED_NEWEST = 'ted_newest'
+
+
 robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
 
 client = DoubanClient(API_KEY, API_SECRET, REDIRECT_URI, SCOPE)
-       
+
+# get tednamelist saved in ted_kv
 @robot.filter("大牛")
-def person(message, session):
-    return "大牛列表,请输入TED牛人序号, 待完成"
+def speaker(message, session):
+    tedstr = ted_kv.get(to_binary(TED_POPULAR))
+    retstr = ''
+    if None != tedstr:
+       speaker_list = json.loads(tedstr)
+       for index in range(len(speaker_list)):
+           retstr += str(index) + speaker_list[index] + '\n'
+       return retstr
+    return "大牛列表暂时还拉不到哦"
 
 # 豆瓣oauth2鉴权   
 @robot.filter("豆瓣")
@@ -97,7 +110,7 @@ def book(message, session):
             ret_str +=  u'\n输入书序号0,1,2等可标记为想读\n'
             print ret_str
             return ret_str
-            
+
 @robot.text
 def session_times(message, session):
     count = session.get("count", 0) + 1
@@ -118,3 +131,4 @@ def get_token(message, session):
        token = user['token']
        return token
     return None
+

@@ -2,6 +2,8 @@
 from robot  import robot
 from robot  import client
 from robot  import wechat_kv
+from robot  import ted_kv
+from robot  import TED_NEWEST, TED_POPULAR
 from werobot.utils  import * 
 from bottle import Bottle, request, run, template
 from bottle import jinja2_view as view
@@ -17,12 +19,9 @@ import bs4
 client_login = DoubanClient(LOGIN_API_KEY, LOGIN_API_SECRET, LOGIN_REDIRECT_URI, LOGIN_SCOPE)
 
 login_kv = sae.kvdb.Client()
-ted_kv = sae.kvdb.Client()
 
 ted_popular_url = 'http://www.ted.com/talks?page=1&sort=popular'
 ted_newest_url = 'http://www.ted.com/talks?page=1'
-TED_POPULAR = 'ted_popular'
-TED_NEWEST = 'ted_newest'
 
 app = Bottle()
 
