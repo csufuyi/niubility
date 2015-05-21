@@ -37,7 +37,7 @@ def speaker(message, session):
     if None != tedstr:
        speaker_list = json.loads(tedstr)
        for index in range(len(speaker_list)):
-           retstr += str(index) + speaker_list[index] + '\n'
+           retstr += str(index) + ' ' + speaker_list[index] + '\n'
        return retstr
     return "大牛列表暂时还拉不到哦"
 
