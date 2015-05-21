@@ -29,6 +29,10 @@ robot = werobot.WeRoBot(token="freesz", enable_session=True,
 
 client = DoubanClient(API_KEY, API_SECRET, REDIRECT_URI, SCOPE)
 
+@robot.text
+def log_begin(message):
+    print message.source + ',' + message.content
+
 # get tednamelist saved in ted_kv
 @robot.filter("大牛")
 def speaker(message, session):
@@ -46,13 +50,17 @@ def speaker(message, session):
 def douban(message, session):
     guid = message.source
     token = get_token(message, session)
-    if None == token:
-        auth_des = u'请点我完成豆瓣授权'
-        auth_url =  client.authorize_url + '&state='+ guid
-        auth_html = '<a href="%s">%s</a>' % (auth_url,auth_des)
-        return auth_html
-    else:
-        return u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
+    if None != token:
+        try:
+            client.auth_with_token(token)
+            return u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
+        except:
+            print message.source + "token失效了"
+    # auth again
+    auth_des = u'请点我完成豆瓣授权'
+    auth_url =  client.authorize_url + '&state='+ guid
+    auth_html = '<a href="%s">%s</a>' % (auth_url,auth_des)
+    return auth_html
 
 # 标记想读 中文正则匹配有问题
 @robot.filter(re.compile("\d"))
@@ -61,10 +69,9 @@ def wish_read(message, session):
     if (None == token):
         return "输入'豆瓣'完成授权后回到微信"
     else:
-        print message.content
         client.auth_with_token(token)
         bookid =  session.get(message.content, 0)
-        print bookid
+        print 'bookid' + bookid
         if 0 == bookid:
             return "输入有误,请重新输入"
         else:
@@ -108,7 +115,6 @@ def book(message, session):
                             + 'pages:' + res['books'][i]['pages'] + ','\
                             + bookurl + '\n ' 
             ret_str +=  u'\n输入书序号0,1,2等可标记为想读\n'
-            print ret_str
             return ret_str
 
 @robot.text
@@ -132,3 +138,7 @@ def get_token(message, session):
        return token
     return None
 
+@robot.handler
+def log_end(message):
+    print message.source + ',' + message.content
+    return "不好意思，我还不知道怎么处理这个..."
