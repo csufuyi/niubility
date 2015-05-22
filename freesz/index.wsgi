@@ -7,6 +7,7 @@ from robot  import TED_NEWEST, TED_POPULAR
 from werobot.utils  import * 
 from bottle import Bottle, request, run, template
 from bottle import jinja2_view as view
+from jinja2 import Environment, FileSystemLoader
 from douban_client import DoubanClient
 from douban import *
 import urllib2
@@ -26,10 +27,12 @@ ted_newest_url = 'http://www.ted.com/talks?page=1'
 app = Bottle()
 
 @app.get('/')
-@view('templates/index.html')
 def welcome():
-    number = 10
-    return {'hello_world_str':'Hello world! Number:%s ' % str(number)}
+    env = Environment(loader=FileSystemLoader('newhtml'))
+    env.variable_start_string = '{{ '
+    env.variable_end_string = ' }}'
+    template = env.get_template('index.html')
+    return template.render(the='variables', go='here')
 
 '''
 TED web html
