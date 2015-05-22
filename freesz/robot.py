@@ -88,34 +88,36 @@ def book(message, session):
     token = get_token(message, session)
     if (None == token):
         return "输入'豆瓣'完成授权后回到微信"
-    else:
+
+    # get json data from douban 
+    try:
         client.auth_with_token(token)
         res = client.book.search(message.content, '', 0, 3)
         res_str = json.dumps(res)
         print res_str
-        count = res['count']
-        if count == 0:
-            return u"没找到啊，修改下关键字试试~"
-        else:
-            ret_str = u'作品列表:\n'
-            for i in range(count):
-                bookid = res['books'][i]['id']
-                #save bookid
-                session[str(i)] = bookid
-                bookurl = "http://book.douban.com/subject/"+ bookid
-                bookauthor = ''
-                for index in range(len(res['books'][i]['author'])):
-                    bookauthor += res['books'][i]['author'][index] + ' '
-                    
-                ret_str +=  str(i) + '\n' \
-                            + res['books'][i]['title'] + ',' \
-                            + bookauthor +  ','   \
-                            + res['books'][i]['publisher'] + ',' \
-                            + res['books'][i]['pubdate'] + ',' \
-                            + 'pages:' + res['books'][i]['pages'] + ','\
-                            + bookurl + '\n ' 
-            ret_str +=  u'\n输入书序号0,1,2等可标记为想读\n'
-            return ret_str
+    except:
+        return u"往豆瓣的路上，网络出问题了，稍后再试吧~"
+    count = res['count']
+    if count == 0:
+        return u"没找到啊，修改下关键字试试~"
+
+    ret_str = u'作品列表:\n'
+    for i in range(count):
+        bookid = res['books'][i]['id']
+        #save bookid
+        session[str(i)] = bookid
+        bookurl = "http://book.douban.com/subject/"+ bookid
+        bookauthor = ''
+        for index in range(len(res['books'][i]['author'])):
+            bookauthor += res['books'][i]['author'][index] + ' '
+        ret_str +=  str(i) + ',' +res['books'][i]['title'] + ',' \
+                    + bookauthor +  ','   \
+                    + res['books'][i]['publisher'] + ',' \
+                    + res['books'][i]['pubdate'] + ',' \
+                    + 'pages:' + res['books'][i]['pages'] + ','\
+                    + bookurl + '\n ' 
+    ret_str +=  u'\n输入书序号0,1,2可标记为想读'
+    return ret_str 
 
 @robot.text
 def session_times(message, session):
@@ -127,6 +129,11 @@ def session_times(message, session):
 def subscribe(message):
     return "欢迎来到Niubility! 输入任意关键字(书名或作者）查书，输入'大牛'有惊喜哦！"
 
+@robot.handler
+def log_end(message):
+    print message.source + ',' + message.content
+    return "不好意思，我还不知道怎么处理这个..."
+
 # get token saved in wechat_kv
 def get_token(message, session):
     guid = message.source
@@ -137,8 +144,3 @@ def get_token(message, session):
        token = user['token']
        return token
     return None
-
-@robot.handler
-def log_end(message):
-    print message.source + ',' + message.content
-    return "不好意思，我还不知道怎么处理这个..."
