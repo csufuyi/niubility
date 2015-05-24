@@ -5,7 +5,7 @@ import json
 from db import ted_kv
 from werobot.utils  import  to_binary
 
-ted_popular_url = 'http://www.ted.com/talks?page=0&sort=popular'
+ted_popular_url = 'http://www.ted.com/talks?page=1&sort=popular'
 ted_newest_url = 'http://www.ted.com/talks?page=1'
 
 TED_POPULAR = 'ted_popular'
