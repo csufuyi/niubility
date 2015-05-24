@@ -60,7 +60,6 @@ def wish_read(message, session):
     else:
         client_wechat.auth_with_token(token)
         bookid =  session.get(message.content, 0)
-        print 'bookid' + bookid
         if 0 == bookid:
             return "输入有误,请重新输入"
         else:
