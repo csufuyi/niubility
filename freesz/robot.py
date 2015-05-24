@@ -19,10 +19,13 @@ robot = werobot.WeRoBot(token="freesz", enable_session=True,
 def log_begin(message):
     print message.source + ',' + message.content
 
+@robot.filter("帮助", 'h')
+def help(message, session):
+    return "输入:\n'大牛(dn)'获取大牛列表\n'豆瓣(db)'获取豆瓣授权\n'作者或书名'获取图书信息\n'帮助(h)'获取帮助"
+
 # get tednamelist saved in ted_kv
-@robot.filter("大牛")
+@robot.filter("大牛", 'dn')
 def speaker(message, session):
-    print TED_POPULAR
     tedstr = ted_kv.get(to_binary(TED_POPULAR))
     retstr = ''
     if None != tedstr:
@@ -35,7 +38,7 @@ def speaker(message, session):
     return "大牛列表暂时还拉不到哦"
 
 # 豆瓣oauth2鉴权   
-@robot.filter("豆瓣")
+@robot.filter("豆瓣", 'db')
 def douban(message, session):
     guid = message.source
     token = get_token(message, session)
