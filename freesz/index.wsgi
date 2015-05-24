@@ -1,31 +1,28 @@
 # -*- coding: utf-8 -*-
-from robot  import robot
-from robot  import client
-from robot  import wechat_kv
-from robot  import ted_kv
-from robot  import TED_NEWEST, TED_POPULAR
-from werobot.utils  import * 
+
+import os 
+import sys
+import json 
+
+root = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(root, 'site-packages'))
+
 from bottle import Bottle, request, run, template
 from bottle import jinja2_view as view
 from jinja2 import Environment, FileSystemLoader
-from douban_client import DoubanClient
-from douban import *
-import urllib2
 import sae
-import sae.kvdb
-import json
-import requests
-import bs4
 
-client_login = DoubanClient(LOGIN_API_KEY, LOGIN_API_SECRET, LOGIN_REDIRECT_URI, LOGIN_SCOPE)
-
-login_kv = sae.kvdb.Client()
-
-ted_popular_url = 'http://www.ted.com/talks?page=1&sort=popular'
-ted_newest_url = 'http://www.ted.com/talks?page=1'
+from robot import robot 
+from db  import wechat_kv
+from db  import login_kv
+from douban import client_login
+from douban import client_wechat
+from ted import get_ted_page_name
+from werobot.utils  import  to_binary
 
 app = Bottle()
 
+# web root 
 @app.get('/')
 def welcome():
     env = Environment(loader=FileSystemLoader('newhtml'))
@@ -34,21 +31,7 @@ def welcome():
     template = env.get_template('index.html')
     return template.render(the='variables', go='here')
 
-'''
-TED web html
-<h4 class="h12 talk-link__speaker">Ken Robinson</h4>
-'''
-def get_ted_page_name():
-        response = requests.get(ted_popular_url)
-        soup = bs4.BeautifulSoup(response.text)
-        ted_name_list = []
-        for tag in soup.find_all("h4"):
-            if None != tag.string:
-                ted_name_list.append(tag.string) 
-        ted_name_str = json.dumps(ted_name_list)
-        ted_kv.set(to_binary(TED_POPULAR), ted_name_str) 
-        return ted_name_str
-
+# web ted
 @app.get('/ted')
 @view('templates/ted.html')
 def tedlist():
@@ -56,14 +39,14 @@ def tedlist():
     print res
     return {'ted_str':res}
 
-# web login auth douban
+# web login 
 @app.get('/auth')
 @view('templates/login.html')
 def login():
     print client_login.authorize_url
     return {'auth_str':'"'+client_login.authorize_url+ '&state=testcontext'+'"'}
 
-# web login douban callback
+# web  douban callback
 @app.get('/login')
 def greet():
     code = request.GET.get('code', 0)
@@ -73,23 +56,24 @@ def greet():
     uid =  client_login.user.me.get('uid', 0)
     login_kv.set(to_binary(guid), client_login.token_code)
     return template('Hello {{name}}, how are you?', name=uid)
-   
+
+
 # wechat douban api callback
 @app.get('/douban')
 @view('templates/douban.html')
 def douban():
     code = request.GET.get('code', None)
     guid = request.GET.get('state', None)
-    client.auth_with_code(code)
-    uid =  client.user.me.get('uid', 0)
+    client_wechat.auth_with_code(code)
+    uid =  client_wechat.user.me.get('uid', 0)
     user = {}
     user['uid'] = uid
-    user['token'] = client.token_code
+    user['token'] = client_wechat.token_code
     user_str = json.dumps(user)
     wechat_kv.set(to_binary(guid), user_str)
     return {'auth_str':uid}
 
-# wechat request
+# wechat request forward to robot
 app.mount('/api', robot.wsgi)
 
 application = sae.create_wsgi_app(app)

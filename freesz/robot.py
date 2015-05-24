@@ -1,33 +1,19 @@
 # -*- coding: utf-8 -*-
-import os 
-import sys
-import sae
 import json
 import re
 
-root = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(root, 'site-packages'))
-
+from db import ted_kv
+from ted import TED_POPULAR
+from db import get_token
+from douban import client_wechat
 from werobot.robot import werobot
+from werobot.utils  import  to_binary
 from werobot.session.saekvstorage import SaeKVDBStorage
-from werobot.utils  import * 
-from douban_client import DoubanClient
-from douban import *
 
 session_storage = SaeKVDBStorage()
 
-# user info [guid], uid, access token
-wechat_kv = sae.kvdb.Client()
-
-ted_kv = sae.kvdb.Client()
-TED_POPULAR = 'ted_popular'
-TED_NEWEST = 'ted_newest'
-
-
 robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
-
-client = DoubanClient(API_KEY, API_SECRET, REDIRECT_URI, SCOPE)
 
 @robot.text
 def log_begin(message):
@@ -36,10 +22,13 @@ def log_begin(message):
 # get tednamelist saved in ted_kv
 @robot.filter("大牛")
 def speaker(message, session):
+    print TED_POPULAR
     tedstr = ted_kv.get(to_binary(TED_POPULAR))
     retstr = ''
     if None != tedstr:
        speaker_list = json.loads(tedstr)
+       if 0 == len(speaker_list):
+           return '大牛列表暂时为空'
        for index in range(len(speaker_list)):
            retstr += str(index) + ' ' + speaker_list[index] + '\n'
        return retstr
@@ -52,13 +41,13 @@ def douban(message, session):
     token = get_token(message, session)
     if None != token:
         try:
-            client.auth_with_token(token)
+            client_wechat.auth_with_token(token)
             return u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
         except:
             print message.source + "token失效了"
     # auth again
     auth_des = u'请点我完成豆瓣授权'
-    auth_url =  client.authorize_url + '&state='+ guid
+    auth_url =  client_wechat.authorize_url + '&state='+ guid
     auth_html = '<a href="%s">%s</a>' % (auth_url,auth_des)
     return auth_html
 
@@ -69,14 +58,14 @@ def wish_read(message, session):
     if (None == token):
         return "输入'豆瓣'完成授权后回到微信"
     else:
-        client.auth_with_token(token)
+        client_wechat.auth_with_token(token)
         bookid =  session.get(message.content, 0)
         print 'bookid' + bookid
         if 0 == bookid:
             return "输入有误,请重新输入"
         else:
             try:
-                client.book.collection(bookid)
+                client_wechat.book.collection(bookid)
             except:
                 return "你收藏过这本书啦!"
             else:
@@ -91,8 +80,8 @@ def book(message, session):
 
     # get json data from douban 
     try:
-        client.auth_with_token(token)
-        res = client.book.search(message.content, '', 0, 3)
+        client_wechat.auth_with_token(token)
+        res = client_wechat.book.search(message.content, '', 0, 3)
         res_str = json.dumps(res)
         print res_str
     except:
@@ -133,14 +122,3 @@ def subscribe(message):
 def log_end(message):
     print message.source + ',' + message.content
     return "不好意思，我还不知道怎么处理这个..."
-
-# get token saved in wechat_kv
-def get_token(message, session):
-    guid = message.source
-    userstr = wechat_kv.get(to_binary(guid))
-    if None != userstr:
-       user = json.loads(userstr)
-       uid = user['uid']
-       token = user['token']
-       return token
-    return None
