@@ -21,11 +21,13 @@ def log_begin(message):
 
 @robot.filter("帮助", 'h')
 def help(message, session):
+    set_state(session, 'end')
     return "输入:\n'大牛(dn)'获取大牛列表\n'豆瓣(db)'获取豆瓣授权\n'作者或书名'获取图书信息\n'帮助(h)'获取帮助"
 
 # get tednamelist saved in ted_kv
 @robot.filter("大牛", 'dn')
 def speaker(message, session):
+    set_state(session, 'end')
     tedstr = ted_kv.get(to_binary(TED_POPULAR))
     retstr = ''
     if None != tedstr:
@@ -41,6 +43,7 @@ def speaker(message, session):
 # 豆瓣oauth2鉴权   
 @robot.filter("豆瓣", 'db')
 def douban(message, session):
+    set_state(session, 'end')
     guid = message.source
     token = get_token(message, session)
     if None != token:
@@ -89,6 +92,7 @@ def wish_read(message, session):
 # 根据关键字查书
 @robot.text
 def book(message, session):
+    set_state(session, 'end')
     token = get_token(message, session)
     if (None == token):
         return "输入'豆瓣'完成授权后回到微信"
@@ -124,21 +128,9 @@ def book(message, session):
     set_state(session, 'booklist')
     return ret_str 
 
-@robot.text
-def session_times(message, session):
-    count = session.get("count", 0) + 1
-    session["count"] = count
-    return "你累计发了 %s 条消息" % count
-
 @robot.subscribe
 def subscribe(message):
     return "欢迎来到Niubility! 输入任意关键字(书名或作者）查书，输入'大牛'有惊喜哦！"
-
-@robot.handler
-def log_end(message):
-    print message.source + ',' + message.content
-    return "不好意思，我还不知道怎么处理这个..."
-
 
 def set_state(session, state):
     session["state"] = state
