@@ -34,6 +34,7 @@ def speaker(message, session):
            return '大牛列表暂时为空'
        for index in range(len(speaker_list)):
            retstr += str(index) + ' ' + speaker_list[index] + '\n'
+       set_state(session, 'dnlist')
        return retstr
     return "大牛列表暂时还拉不到哦"
 
@@ -60,8 +61,8 @@ def wish_read(message, session):
     token = get_token(message, session)
     if (None == token):
         return "输入'豆瓣'完成授权后回到微信"
-    else:
-        client_wechat.auth_with_token(token)
+    client_wechat.auth_with_token(token)
+    if get_state(session) == 'booklist' or get_state(session) == 'wishread':
         bookid =  session.get(message.content, 0)
         if 0 == bookid:
             return "输入有误,请重新输入"
@@ -72,7 +73,19 @@ def wish_read(message, session):
                 return "你收藏过这本书啦!"
             else:
                 return "设置想读成功!"
- 
+        set_state(session, 'wishread')
+    elif get_state(session) ==  'dnlist':
+        dnstr =  message.content
+        tedstr = ted_kv.get(to_binary(TED_POPULAR))
+        retstr = ''
+        if None != tedstr:
+            speaker_list = json.loads(tedstr)
+        dnid = int(dnstr)
+        if dnid >= len(speaker_list):
+           return '输入有误'
+        # change id to keyward
+        message.content = speaker_list[dnid]
+    
 # 根据关键字查书
 @robot.text
 def book(message, session):
@@ -108,6 +121,7 @@ def book(message, session):
                     + 'pages:' + res['books'][i]['pages'] + ','\
                     + bookurl + '\n ' 
     ret_str +=  u'\n输入书序号0,1,2可标记为想读'
+    set_state(session, 'booklist')
     return ret_str 
 
 @robot.text
@@ -124,3 +138,10 @@ def subscribe(message):
 def log_end(message):
     print message.source + ',' + message.content
     return "不好意思，我还不知道怎么处理这个..."
+
+
+def set_state(session, state):
+    session["state"] = state
+    
+def get_state(session):
+    return session.get("state", None)
