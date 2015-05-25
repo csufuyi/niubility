@@ -1,0 +1,8 @@
+digraph finite_state_machine {
+	rankdir=LR;
+	size="8,5"
+	node [shape = circle];
+	dnlist -> booklist [ label = "数字num" ];
+	booklist -> wishread [ label = "数字num" ];
+	wishread -> wishread [ label = "数字num" ];
+}
