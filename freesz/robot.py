@@ -16,18 +16,20 @@ robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
 
 @robot.text
-def log_begin(message):
+def log_begin(message, session):
     print message.source + ',' + message.content
+    # only care three state
+    state = get_state(session)
+    if state != 'booklist' and state != 'wishread' and state != 'dnlist':
+        set_state(session, None)
 
 @robot.filter("帮助", 'h')
 def help(message, session):
-    set_state(session, 'end')
     return "输入:\n'大牛(dn)'获取大牛列表\n'豆瓣(db)'获取豆瓣授权\n'作者或书名'获取图书信息\n'帮助(h)'获取帮助"
 
 # get tednamelist saved in ted_kv
 @robot.filter("大牛", 'dn')
 def speaker(message, session):
-    set_state(session, 'end')
     tedstr = ted_kv.get(to_binary(TED_POPULAR))
     retstr = ''
     if None != tedstr:
@@ -43,7 +45,6 @@ def speaker(message, session):
 # 豆瓣oauth2鉴权   
 @robot.filter("豆瓣", 'db')
 def douban(message, session):
-    set_state(session, 'end')
     guid = message.source
     token = get_token(message, session)
     if None != token:
@@ -92,7 +93,6 @@ def wish_read(message, session):
 # 根据关键字查书
 @robot.text
 def book(message, session):
-    set_state(session, 'end')
     token = get_token(message, session)
     if (None == token):
         return "输入'豆瓣'完成授权后回到微信"
