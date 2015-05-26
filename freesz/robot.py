@@ -50,9 +50,10 @@ def douban(message, session):
     if None != token:
         try:
             client_wechat.auth_with_token(token)
+            client_wechat.book.search('哈哈', '', 0, 1)
             return u"豆瓣授权成功! " + u"公众号id:" + guid + u'豆瓣token:'+token
         except:
-            print message.source + "token失效了"
+            print u"豆瓣token失效了"
     # auth again
     auth_des = u'请点我完成豆瓣授权'
     auth_url =  client_wechat.authorize_url + '&state='+ guid
@@ -104,7 +105,7 @@ def book(message, session):
         res_str = json.dumps(res)
         print res_str
     except:
-        return u"往豆瓣的路上，网络出问题了，稍后再试吧~"
+        return u"豆瓣授权过期了，请输入'豆瓣'(db)重新授权~"
     count = res['count']
     if count == 0:
         return u"没找到啊，修改下关键字试试~"
