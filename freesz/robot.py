@@ -135,11 +135,11 @@ def book(message, session):
         bookauthor = ''
         for index in range(len(res['books'][i]['author'])):
             bookauthor += res['books'][i]['author'][index] + ' '
-        ret_str +=  '[' + str(i) + ']' + '.' +res['books'][i]['title'] + ',' \
-                    + bookauthor +  ','   \
+        ret_str +=  '[' + str(i) + ']' + '.' +res['books'][i]['title']  \
+                    + '\n' + bookauthor +  ','   \
                     + res['books'][i]['publisher'] + ',' \
                     + res['books'][i]['pubdate'] \
-                    + '\n ' + bookurl + '\n ' 
+                    + '\n ' + bookurl + '\n ' + '\n ' 
     ret_str +=  u'\n输入书序号0,1,2可标记为想读'
     set_state(session, 'booklist')
     return ret_str 
