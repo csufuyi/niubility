@@ -30,7 +30,7 @@ def log_begin(message, session):
 
 @robot.filter("帮助", 'h')
 def help(message, session):
-    return "输入:\n'大牛(dn)'获取大牛列表\n'豆瓣(db)'获取豆瓣授权\n'作者或书名[支持语音]'获取图书信息\n'帮助(h)'获取帮助"
+    return "输入:\n'大牛(dn)'获取大牛列表\n'豆瓣(db)'获取豆瓣授权\n'作者或书名[语音]'获取图书信息\n'帮助(h)'获取帮助"
 
 # get tednamelist saved in ted_kv
 @robot.filter("大牛", 'dn')
