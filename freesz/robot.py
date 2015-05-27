@@ -15,6 +15,11 @@ session_storage = SaeKVDBStorage()
 robot = werobot.WeRoBot(token="freesz", enable_session=True,
                         session_storage=session_storage)
 
+@robot.voice
+def voicequery(message, session):
+    print message.source + ',' +  message.recognition
+    return book(message, session)
+
 @robot.text
 def log_begin(message, session):
     print message.source + ',' + message.content
@@ -101,14 +106,25 @@ def book(message, session):
     # get json data from douban 
     try:
         client_wechat.auth_with_token(token)
-        res = client_wechat.book.search(message.content, '', 0, 3)
+        querystr = ''
+        if message.type == 'text':
+            querystr = message.content
+        elif message.type == 'voice':
+            querystr = message.recognition
+        else:
+            return u'暂时没法处理这种输入，我们赶紧查查'
+            
+        res = client_wechat.book.search(querystr, '', 0, 3)
         res_str = json.dumps(res)
         print res_str
     except:
         return u"豆瓣授权过期了，请输入'豆瓣'(db)重新授权~"
     count = res['count']
     if count == 0:
-        return u"没找到啊，修改下关键字试试~"
+        if message.type == 'voice':
+            return u"输入的是: '%s' 么？改用文字输入试试吧" %message.recognition
+        else:
+            return u"没找到啊，修改下关键字试试~"
 
     ret_str = u'作品列表:\n'
     for i in range(count):
