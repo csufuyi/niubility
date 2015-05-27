@@ -126,7 +126,7 @@ def book(message, session):
         else:
             return u"没找到啊，修改下关键字试试~"
 
-    ret_str = u'作品列表:\n'
+    ret_str = u'书籍列表:\n'
     for i in range(count):
         bookid = res['books'][i]['id']
         #save bookid
@@ -135,12 +135,11 @@ def book(message, session):
         bookauthor = ''
         for index in range(len(res['books'][i]['author'])):
             bookauthor += res['books'][i]['author'][index] + ' '
-        ret_str +=  str(i) + ',' +res['books'][i]['title'] + ',' \
+        ret_str +=  '[' + str(i) + ']' + '.' +res['books'][i]['title'] + ',' \
                     + bookauthor +  ','   \
                     + res['books'][i]['publisher'] + ',' \
-                    + res['books'][i]['pubdate'] + ',' \
-                    + 'pages:' + res['books'][i]['pages'] + ','\
-                    + bookurl + '\n ' 
+                    + res['books'][i]['pubdate'] \
+                    + '\n ' + bookurl + '\n ' 
     ret_str +=  u'\n输入书序号0,1,2可标记为想读'
     set_state(session, 'booklist')
     return ret_str 
