@@ -42,7 +42,8 @@ def speaker(message, session):
        if 0 == len(speaker_list):
            return '大牛列表暂时为空'
        for index in range(len(speaker_list)):
-           retstr += str(index) + ' ' + speaker_list[index] + '\n'
+           retstr += '[' + str(index) + ']. ' + speaker_list[index] + '\n'
+       retstr += u'\n输入序号可以查询大牛作品'
        set_state(session, 'dnlist')
        return retstr
     return "大牛列表暂时还拉不到哦"
@@ -92,7 +93,7 @@ def wish_read(message, session):
             speaker_list = json.loads(tedstr)
         dnid = int(dnstr)
         if dnid >= len(speaker_list):
-           return '输入有误'
+           return '输入有误,请重新输入'
         # change id to keyward
         message.content = speaker_list[dnid]
     
@@ -140,13 +141,14 @@ def book(message, session):
                     + res['books'][i]['publisher'] + ',' \
                     + res['books'][i]['pubdate'] \
                     + '\n ' + bookurl + '\n ' + '\n ' 
-    ret_str +=  u'\n输入书序号0,1,2可标记为想读'
+    ret_str +=  u'输入书序号0,1,2可标记为想读'
     set_state(session, 'booklist')
     return ret_str 
 
 @robot.subscribe
 def subscribe(message):
-    return "欢迎来到Niubility! 输入任意关键字(书名或作者）查书，输入'大牛'有惊喜哦！"
+    return "我是小书童, 很高兴为您服务\n输入关键字(书名或作者）查书, 标记为想读, 支持语音哦\n输入'大牛[dn]', 查TED大牛列表"
+
 
 def set_state(session, state):
     session["state"] = state

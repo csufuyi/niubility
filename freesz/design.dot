@@ -1,0 +1,18 @@
+digraph problem_tree {
+	rankdir=LR;
+	size="8,5"
+	node [shape = doublecircle]; start end;
+	node [shape = circle];
+	start -> help [ label = "帮助h" ];
+	start -> douban [ label = "豆瓣db" ];
+	start -> dnlist [ label = "大牛dn" ];
+	start -> booklist [ label = "关键字text" ];
+	dnlist -> booklist [ label = "数字num" ];
+	booklist -> wishread [ label = "数字num" ];
+	wishread -> wishread [ label = "数字num" ];
+	dnlist -> end [ label = "关键字text" ];
+	wishread -> end [ label = "关键字text" ];
+	booklist -> end [ label = "关键字text" ];
+	help -> end [ label = "关键字text" ];
+	douban -> end [ label = "关键字text" ];
+}
