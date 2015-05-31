@@ -30,7 +30,7 @@ def log_begin(message, session):
 
 @robot.filter("帮助", 'h')
 def help(message, session):
-    return "输入:\n'大牛(dn)'获取大牛列表\n'豆瓣(db)'获取豆瓣授权\n'作者或书名[语音]'获取图书信息\n'帮助(h)'获取帮助"
+    return "输入:\n'大牛'或'dn'获取 TED 最受欢迎演讲者列表\n'豆瓣'或'db'获取豆瓣授权\n'作者或书名[语音]'获取图书信息\n'帮助'或'h'获取帮助"
 
 # get tednamelist saved in ted_kv
 @robot.filter("大牛", 'dn')
@@ -43,7 +43,7 @@ def speaker(message, session):
            return '大牛列表暂时为空'
        for index in range(len(speaker_list)):
            retstr += '[' + str(index) + ']. ' + speaker_list[index] + '\n'
-       retstr += u'\n输入序号可以查询大牛作品'
+       retstr += u'\n输入序号可以查询大牛著作'
        set_state(session, 'dnlist')
        return retstr
     return "大牛列表暂时还拉不到哦"
@@ -115,7 +115,7 @@ def book(message, session):
         else:
             return u'暂时没法处理这种输入，我们赶紧查查'
             
-        res = client_wechat.book.search(querystr, '', 0, 3)
+        res = client_wechat.book.search(querystr, '', 0, 5)
         res_str = json.dumps(res)
         print res_str
     except:
@@ -141,13 +141,13 @@ def book(message, session):
                     + res['books'][i]['publisher'] + ',' \
                     + res['books'][i]['pubdate'] \
                     + '\n ' + bookurl + '\n ' + '\n ' 
-    ret_str +=  u'输入书序号0,1,2可标记为想读'
+    ret_str +=  u'输入书的序号0,1,2...可标记为想读'
     set_state(session, 'booklist')
     return ret_str 
 
 @robot.subscribe
 def subscribe(message):
-    return "我是小书童, 很高兴为您服务\n输入关键字(书名或作者）查书, 标记为想读, 支持语音哦\n输入'大牛[dn]', 查TED大牛列表"
+    return "我是小书童, 很高兴为您服务:\n \n- 输入关键字(书名或作者）查书, 标记为想读, 支持语音哦\n \n- 输入'大牛'或'dn', 查看TED最受欢迎演讲者列表"
 
 
 def set_state(session, state):
