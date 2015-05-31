@@ -141,7 +141,7 @@ def book(message, session):
                     + res['books'][i]['publisher'] + ',' \
                     + res['books'][i]['pubdate'] \
                     + '\n ' + bookurl + '\n ' + '\n ' 
-    ret_str +=  u'输入书的序号0,1,2...可标记为想读'
+    ret_str +=  u'输入书的序号0,1,2...可直接标记为想读'
     set_state(session, 'booklist')
     return ret_str 
 
