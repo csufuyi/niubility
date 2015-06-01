@@ -128,6 +128,9 @@ def book(message, session):
             return u"没找到啊，修改下关键字试试~"
 
     ret_str = u'书籍列表:\n'
+    if message.type == 'voice':
+        ret_str += u"识别的关键词:%s\n" %message.recognition
+        
     for i in range(count):
         bookid = res['books'][i]['id']
         #save bookid
