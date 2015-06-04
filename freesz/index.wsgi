@@ -3,6 +3,7 @@
 import os 
 import sys
 import json 
+import traceback
 
 root = os.path.dirname(__file__)
 sys.path.insert(0, os.path.join(root, 'site-packages'))
@@ -64,7 +65,11 @@ def greet():
 def douban():
     code = request.GET.get('code', None)
     guid = request.GET.get('state', None)
-    client_wechat.auth_with_code(code)
+    try:
+        client_wechat.auth_with_code(code)
+    except Exception, e:
+        traceback.print_exc()
+        return "不好意思，豆瓣这会儿出问题了, 迟些时候再试试吧"
     uid =  client_wechat.user.me.get('uid', 0)
     user = {}
     user['uid'] = uid

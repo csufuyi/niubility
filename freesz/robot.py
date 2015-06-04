@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import re
+import traceback
 
 from db import ted_kv
 from ted import TED_POPULAR
@@ -30,7 +31,7 @@ def log_begin(message, session):
 
 @robot.filter("帮助", 'h')
 def help(message, session):
-    return "这是小小书童[bookmate]的测试号, 新功能会放到这里验证，当然也不太稳定，还望海涵!\n 输入:\n'大牛'或'dn'获取 TED 最受欢迎演讲者列表\n'豆瓣'或'db'获取豆瓣授权\n'作者或书名[语音]'获取图书信息\n'帮助'或'h'获取帮助"
+    return "输入:\n'大牛'或'dn'获取 TED 最受欢迎演讲者列表\n'豆瓣'或'db'获取豆瓣授权\n'作者或书名[语音]'获取图书信息\n'帮助'或'h'获取帮助"
 
 # get tednamelist saved in ted_kv
 @robot.filter("大牛", 'dn')
@@ -106,7 +107,6 @@ def book(message, session):
 
     # get json data from douban 
     try:
-        client_wechat.auth_with_token(token)
         querystr = ''
         if message.type == 'text':
             querystr = message.content
@@ -118,7 +118,8 @@ def book(message, session):
         res = client_wechat.book.search(querystr, '', 0, 5)
         res_str = json.dumps(res)
         print res_str
-    except:
+    except Exception, e:
+        traceback.print_exc()
         return u"豆瓣授权过期了，请输入'豆瓣'(db)重新授权~"
     count = res['count']
     if count == 0:
