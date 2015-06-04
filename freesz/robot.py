@@ -104,7 +104,7 @@ def book(message, session):
     token = get_token(message, session)
     if (None == token):
         return "输入'豆瓣'完成授权后回到微信"
-
+    client_wechat.auth_with_token(token)
     # get json data from douban 
     try:
         querystr = ''
