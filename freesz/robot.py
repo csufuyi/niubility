@@ -10,10 +10,11 @@ from douban import client_wechat
 from werobot.robot import werobot
 from werobot.utils  import  to_binary
 from werobot.session.saekvstorage import SaeKVDBStorage
+from xsettings import XCFG
 
 session_storage = SaeKVDBStorage()
 
-robot = werobot.WeRoBot(token="freesz", enable_session=True,
+robot = werobot.WeRoBot(token=XCFG.TOKEN, enable_session=True,
                         session_storage=session_storage)
 
 @robot.voice
