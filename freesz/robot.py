@@ -63,7 +63,7 @@ def douban(message, session):
         except:
             print u"豆瓣token失效了"
     # auth again
-    auth_des = u'请点我完成豆瓣授权'
+    auth_des = u'点我完成豆瓣授权.[页面打开后,点击右上角"在浏览器中打开"可获取过去授权]'
     auth_url =  client_wechat.authorize_url + '&state='+ guid
     auth_html = '<a href="%s">%s</a>' % (auth_url,auth_des)
     return auth_html
